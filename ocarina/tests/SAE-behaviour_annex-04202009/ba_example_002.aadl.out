@@ -1,0 +1,2 @@
+ba_example_002.aadl:20:05: speed.i ( Thread ) must define one or more final states.
+Cannot analyze BEHAVIOR_SPECIFICATION specifications

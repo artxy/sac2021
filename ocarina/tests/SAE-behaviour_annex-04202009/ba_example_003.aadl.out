@@ -1,0 +1,3 @@
+Frontends : error : ba_example_003.aadl:64:24: parsing Behavior_Transition, token ']->' is expected, found token '('
+Frontends : error : ba_example_003.aadl:64:33: parsing Behavior_Transition, the list parsed is empty
+Frontends : fatal error : ba_example_003.aadl:72:09: parsing Behavior_Specification, failed

@@ -1,0 +1,147 @@
+------------------------------------------------------------------------------
+--                                                                          --
+--                           OCARINA COMPONENTS                             --
+--                                                                          --
+--                              O C A R I N A                               --
+--                                                                          --
+--                              P r o j e c t                               --
+--                                                                          --
+--    Copyright (C) 2007-2009 Telecom ParisTech, 2010-2018 ESA & ISAE.      --
+--                                                                          --
+-- Ocarina  is free software; you can redistribute it and/or modify under   --
+-- terms of the  GNU General Public License as published  by the Free Soft- --
+-- ware  Foundation;  either version 3,  or (at your option) any later ver- --
+-- sion. Ocarina is distributed in the hope that it will be useful, but     --
+-- WITHOUT ANY WARRANTY; without even the implied warranty of               --
+-- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                     --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+--                 Ocarina is maintained by the TASTE project               --
+--                      (taste-users@lists.tuxfamily.org)                   --
+--                                                                          --
+------------------------------------------------------------------------------
+
+project Ocarina is
+
+   -- This is Ocarina top project file. It is included by all
+   -- components project file and configure the main compilation,
+   -- linking and analysis phases of the tool.
+
+   Top_Src_Dir := External ("ABS_SRC_DIR", "../src");
+   Top_Build_Dir := External ("ABS_BUILD_DIR", "../src");
+   --  The absolute source dir and build dir are given through
+   --  external variable from the command line because they need to be
+   --  computed at runtime to be platform dependant.
+
+   for Source_Dirs use ();
+
+   type Build_Type is ("release", "debug");
+   Build : Build_Type := External ("BUILD", "debug");
+
+   type Lib_Kinds is ("relocatable", "static");
+   Lib_Type : Lib_Kinds := External ("LIBRARY_TYPE", "static");
+
+   --------------
+   -- Compiler --
+   --------------
+
+   package Compiler is
+      for  Local_Configuration_Pragmas use Top_Src_Dir
+         & "/../projects/restrictions.adc";
+
+      case Build is
+        when "debug" =>
+           for Default_Switches ("Ada") use
+             ("-g",
+              "-gnatfy",
+              "-gnatwae",
+              "-gnatoa",
+              "-fstack-check",
+              "-gnaty",
+              "-gnatwL", -- elaboration warnings disabled
+              "-gnatyu", -- not in -gnaty: check multiple blank lines
+              "-gnatys", -- not in -gnatx: check useless parentheses
+              @GCOV@"-fprofile-arcs",
+              @GCOV@"-ftest-coverage",
+              "-gnat12");
+        when "release" =>
+           for Default_Switches ("Ada") use
+             ("-O2",
+              "-gnat12",
+              "-gnata",
+              "-gnaty",
+              "-gnatyu", -- not in -gnaty: check multiple blank lines
+              "-gnatys", -- not in -gnatx: check useless parentheses
+              "-gnatpn");
+      end case;
+   end Compiler;
+
+   ------------
+   -- Binder --
+   ------------
+
+   package Binder is
+      case Build is
+        when "debug" =>
+           for Default_Switches ("Ada") use
+              ("-E", --  Store traceback information in exception occurences
+               "-r", -- List additional restrictions
+               "-t"  -- Tolerate timestamps and other consistency errors
+           );
+        when "release" =>
+           for Default_Switches ("Ada") use ("-t", "-static");
+      end case;
+   end Binder;
+
+   ------------
+   -- Linker --
+   ------------
+
+   package Linker is
+      case Build is
+        when "debug" =>
+          for Default_Switches ("Ada") use (
+                                          @GCOV@"-g",
+                                          @GCOV@"-fprofile-arcs",
+                                          @GCOV@"-ftest-coverage"
+                                         );
+        when "release" =>
+           for Default_Switches ("Ada") use ();
+      end case;
+   end Linker;
+
+   -------------
+   -- Builder --
+   -------------
+
+   package Builder is
+      case Build is
+        when "debug" =>
+           for Default_Switches ("Ada") use ("-g");
+        when "release" =>
+           for Default_Switches ("Ada") use ("-s");
+      end case;
+   end Builder;
+
+   -----------
+   -- Check --
+   -----------
+
+   package Check is
+      for Default_Switches ("ada") use
+      ("-rules",
+      "+RGoto",  --  9.1.5.11 Goto Statements
+      "+RMetrics_Cyclomatic_Complexity:7",
+      "+RMetrics_LSLOC:150"
+      );
+   end Check;
+
+end Ocarina;

@@ -1,0 +1,102 @@
+package sys
+public
+
+  -----------------------------------------------------------------
+  ---------------------------Data---------------------------------
+  -----------------------------------------------------------------
+
+  data d1
+  properties
+    Concurrency_Control_Protocol => None_Specified;
+    -- other possible values
+    -- Concurrency_Control_Protocol => Priority_Inheritance;
+    -- Concurrency_Control_Protocol => Priority_Ceiling;
+  end d1;
+
+  -------------------------------------------------------------------
+  -----------------------Threads-------------------------------------
+  -------------------------------------------------------------------
+
+  thread th1
+  features
+      d1_access : requires data access d1;
+  properties
+      Dispatch_Protocol=> Periodic;
+      Dispatch_Offset => 2 ms;
+      Period => 25 ms;
+      Compute_Execution_Time => 1478 us .. 1660 us;
+      Deadline => 10 ms;
+  end th1;
+
+  thread th2
+  features
+      d1_access : requires data access d1;
+  properties
+      Dispatch_Protocol=> Periodic;
+      Dispatch_Offset => 2 ms;
+      Period => 25 ms;
+      Compute_Execution_Time => 1478 us .. 1660 us;
+      Deadline => 10 ms;
+  end th2;
+
+  -------------------------------------------------------------------
+  -----------------------processes-------------------------------------
+  -------------------------------------------------------------------
+
+  process p1
+  end p1;
+
+  process implementation p1.impl
+  subcomponents
+    th1: thread th1;
+    th2: thread th2;
+    d1: data d1; 
+
+  connections
+    c1: data access d1 <-> th1.d1_access;
+    c2: data access d1 <-> th2.d1_access;
+
+  end p1.impl;
+
+  ------------------------------------------------------------------
+  -----------------------memories-----------------------------------
+  ------------------------------------------------------------------
+
+  memory m1
+  end m1;
+
+  -------------------------------------------------------------------
+  ----------------------processor------------------------------------
+  -------------------------------------------------------------------
+
+  processor pr1
+  end pr1;
+
+  processor implementation pr1.impl
+  properties
+    Scheduling_Protocol => (POSIX_1003_HIGHEST_PRIORITY_FIRST_PROTOCOL);
+  end pr1.impl;
+	
+  ------------------------------------------------------------------
+  ----------------system--------------------------------------------
+  ------------------------------------------------------------------
+
+  system s1
+  end s1;
+
+  system implementation s1.impl
+  subcomponents	
+    -- Hardware
+    pr1	: processor pr1.impl;
+    m1 	: memory m1;
+
+    -- Software    
+    p1 	: process p1.impl;
+	
+  properties
+    Actual_processor_binding => (reference(pr1)) applies to p1;
+    Actual_memory_binding => (reference(m1)) applies to p1;
+    
+  end s1.impl;
+	
+end sys;

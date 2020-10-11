@@ -1,0 +1,186 @@
+module Ocarina::Backends::MAST_Tree::Nodes {
+
+  /******************/
+  /* Internal types */
+  /******************/
+
+  typedef octet   Operator_Id;
+  typedef long    Name_Id;
+  typedef long    Value_Id;
+
+  /******************/
+  /* Internal nodes */
+  /******************/
+
+  interface Node_Id {
+    Node_Id    Next_Node;
+    Node_Id    Frontend_Node;
+  };
+
+  interface Definition : Node_Id {
+    Node_Id    Defining_Identifier;
+  };
+
+  interface MAST_Node : Node_Id {
+    Name_Id    Node_Name;
+    Name_Id    Node_Type;
+  };
+
+  interface Driver : MAST_Node {
+  	boolean 	Is_Packet_Driver;
+  	Name_Id	Send_Operation_Name;
+  	Name_Id	Scheduling_Server;
+	Name_Id	Receive_Operation_Name;
+	boolean  Message_Partitioning;
+	boolean  Is_RTA_Overhead_Model_Coupled;
+  };
+
+  interface Scheduling_Server : MAST_Node {
+  	Name_Id 		Associated_Scheduler;
+	Node_Id		Parameters;
+	boolean     Is_Regular;
+	Name_Id		Server_Processing_Resource;
+  };
+
+  interface Scheduling_Server_Parameters : Node_Id {
+   boolean		Fixed_Priority;
+  	Node_Id 		Sched_Type;
+	Node_Id		Priority;
+	boolean     Is_Preassigned;
+  };
+
+  interface Scheduler : MAST_Node
+  {
+  	boolean 		Is_Primary_Scheduler;
+  	Name_Id		Host;
+  	Node_Id 		Policy;
+  	boolean 		Use_Fixed_Priority;
+  	Node_Id		Max_Priority;
+  	Node_Id 		Min_Priority;
+  };
+
+  interface Scheduler_Policy : MAST_Node
+  {
+  	Name_Id Scheduling_Type;
+	Node_Id Worst_Context_Switch;
+	Node_Id Avg_Context_Switch;
+	Node_Id Best_Context_Switch;
+	Node_Id Max_Interrupt_Priority;
+	Node_Id Min_Interrupt_Priority;
+  };
+
+  interface Literal : Node_Id {
+    Value_Id   Value;
+  };
+
+  interface List_Id {
+    Node_Id    First_Node;
+    Node_Id    Last_Node;
+  };
+
+  interface Processing_Resource : MAST_Node {
+  	Node_Id 		Max_Interrupt_Priority;
+  	Node_Id 		Min_Interrupt_Priority;
+  	Node_Id 		Worst_ISR_Switch;
+  	Node_Id 		Avg_ISR_Switch;
+  	Node_Id 		Best_ISR_Switch;
+  	Node_Id 		Speed_Factor;
+	boolean     Regular_Processor;
+	boolean     Packet_Based_Network;
+	boolean     Fixed_Priority_Processor;
+	boolean		Is_Simplex;
+	boolean		Is_Half_Duplex;
+	boolean		Is_Full_Duplex;
+	Node_Id		Throughput;
+	Node_Id		Max_Blocking;
+	Node_Id		Max_Packet_Size;
+	Node_Id		Min_Packet_Size;
+	Node_Id		Max_Packet_Transmission_Time;
+	Node_Id		Min_Packet_Transmission_Time;
+	List_Id		List_Of_Drivers;
+  };
+
+
+  interface Operation : MAST_Node {
+  	boolean 		Is_Simple;
+	boolean		Is_Enclosing;
+	boolean		Is_Message_Transmission;
+	boolean		Is_Composite;
+	List_Id		Operations;
+	List_Id		Shared_Resources_List;
+	Node_Id		Worst_Case_Execution_Time;
+	Node_Id		Best_Case_Execution_Time;
+	Node_Id		Avg_Case_Execution_Time;
+	Node_Id		Max_Message_Size;
+	Node_Id		Avg_Message_Size;
+	Node_Id		Min_Message_Size;
+  };
+
+
+  interface Transaction : MAST_Node {
+  	boolean 		Is_Regular;
+	List_Id		External_Events;
+	List_Id		Internal_Events;
+	List_Id		Event_Handlers;
+  };
+
+	interface Event : MAST_Node {
+		boolean Is_Regular;
+		boolean Is_Sporadic;
+		boolean Is_Periodic;
+		Node_Id Timing_Requirements;
+		Node_Id Min_Interarrival;
+		Node_Id Period;
+	};
+
+	interface Shared_Resource : MAST_Node {
+		boolean Is_Immediate_Ceiling_Resource;
+	};
+
+	interface Event_Timing_Requirements : Node_Id {
+		boolean Is_Hard_Deadline;
+		Node_Id Deadline;
+		Name_Id Referenced_Event;
+	};
+
+
+  interface Event_Handler : Node_Id {
+  boolean Is_Activity;
+  Name_Id Input_Name;
+  Name_Id Output_Name;
+  Name_Id Operation_Name;
+  Name_Id Server_Name;
+  };
+
+  interface Defining_Identifier : Node_Id {
+    Name_Id    Name;
+    Node_Id    Corresponding_Node;
+    Node_Id    Compile_Unit;
+  };
+
+  interface MAST_File : Definition {
+    Node_Id    Distributed_Application_Unit;
+    List_Id    Declarations;
+  };
+
+ 
+   interface Base_Type {
+      Name_Id     Image;
+   };
+ 
+   interface Container : Node_Id {
+      Node_Id     Content;
+   };
+
+   interface _String : Base_Type {};
+   interface _Numeric : Base_Type {};
+   interface _Float : Base_Type {};
+
+   interface HI_Tree_Bindings : Node_Id {
+      Node_Id    Unit;
+      Node_Id    Node;
+      List_Id    Processes;
+   };
+
+
+};

@@ -1,0 +1,118 @@
+module Ocarina::Backends::ASN1_Tree::Nodes {
+
+  /******************/
+  /* Internal types */
+  /******************/
+
+  typedef octet   Operator_Id;
+  typedef long    Name_Id;
+  typedef long    Value_Id;
+
+  interface Base_Type {
+    Name_Id    Image;
+  };
+
+  /******************/
+  /* Internal nodes */
+  /******************/
+
+  interface Node_Id {
+    Node_Id    Next_Node;
+    Node_Id    Frontend_Node;
+  };
+
+  interface Definition : Node_Id {
+    Node_Id    Defining_Identifier;
+  };
+
+  interface List_Id {
+    Node_Id    First_Node;
+    Node_Id    Last_Node;
+  };
+
+  interface Defining_Identifier : Node_Id {
+    Name_Id    Name;
+    Node_Id    Corresponding_Node;
+    Node_Id    Compile_Unit;
+    boolean    Is_Pointer; 
+  };
+
+  interface ASN1_File : Definition {
+    Node_Id    Module_Node;
+  };
+
+  interface ASN1_Module : Node_Id {
+    Name_Id    Name;
+	 Node_Id    Oid;
+    boolean    Automatic_Tags;
+    List_Id    Imported_Clauses;
+    List_Id    Exported_Clauses;
+	 List_Id    Definitions;
+  };
+
+  interface Import_Export_Clause : Node_Id {
+  	 Name_Id    Name;
+    Name_Id    Associated_Module;
+  };
+
+  interface Type_Definition : Definition 
+  {
+    Name_Id   Name;
+    Node_Id   Declaration;
+  };
+
+  interface Enumerated : Node_Id
+  {
+    List_Id   Values;
+  };
+
+  interface Enumerated_Value_List : List_Id {};
+
+  interface Enumerated_Value : Node_Id
+  {
+   Name_Id     Name;
+   Value_Id    Value;
+  };
+
+  interface Sequence : Node_Id
+  {
+   List_Id  Values;
+  };
+
+  interface Sequence_Member : Node_Id
+  {
+      Name_Id  Member_Name;
+      Node_Id  Member_Type;
+  };
+
+  interface Choice : Node_Id
+  {
+   List_Id  Values;
+  };
+
+interface Choice_Member : Node_Id
+  {
+      Name_Id  Member_Name;
+      Node_Id  Member_Type;
+  };
+
+  interface Literal : Node_Id {
+    Value_Id   Value;
+  };
+
+  interface Type_Designator : Node_Id {
+    Node_Id Type_Name;
+    Node_Id Constraints;
+  };
+
+  interface Type_Constraints : Node_Id {
+   Value_Id    Size_Down;
+   Value_Id    Size_Up;
+  };
+
+
+  interface _Float           : Base_Type {};
+  interface _Int             : Base_Type {};
+  interface _Char            : Base_Type {};
+  interface _String          : Base_Type {};
+};

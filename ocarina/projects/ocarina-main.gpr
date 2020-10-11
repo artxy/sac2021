@@ -1,0 +1,61 @@
+------------------------------------------------------------------------------
+--                                                                          --
+--                           OCARINA COMPONENTS                             --
+--                                                                          --
+--                         O C A R I N A . M A I N                          --
+--                                                                          --
+--                              P r o j e c t                               --
+--                                                                          --
+--    Copyright (C) 2007-2009 Telecom ParisTech, 2010-2018 ESA & ISAE.      --
+--                                                                          --
+-- Ocarina  is free software; you can redistribute it and/or modify under   --
+-- terms of the  GNU General Public License as published  by the Free Soft- --
+-- ware  Foundation;  either version 3,  or (at your option) any later ver- --
+-- sion. Ocarina is distributed in the hope that it will be useful, but     --
+-- WITHOUT ANY WARRANTY; without even the implied warranty of               --
+-- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                     --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+--                 Ocarina is maintained by the TASTE project               --
+--                      (taste-users@lists.tuxfamily.org)                   --
+--                                                                          --
+------------------------------------------------------------------------------
+
+with "ocarina";
+with "ocarina-core";
+with "ocarina-config";
+with "ocarina-frontends";
+with "ocarina-backends";
+with "ocarina-transfo";
+
+project Ocarina.Main is
+   Src_Dir := Ocarina.Top_Src_Dir & "/main";
+   Src_Dir_2 := Ocarina.Top_Src_Dir & "/python";
+   Build_Dir := Ocarina.Top_Build_Dir & "/main";
+
+   for Source_Dirs use (Src_Dir, Build_Dir, src_dir_2);
+   for Object_Dir use Build_Dir & "/objects";
+   for Library_Dir use Build_Dir & "/libs";
+   for Exec_Dir use Build_Dir;
+   for Main use ("ocarina_cmd");
+
+   package Compiler renames Ocarina.Compiler;
+   package Binder renames Ocarina.Binder;
+   package Linker renames Ocarina.Linker;
+   package Check renames Ocarina.Check;
+
+   package Builder is
+      for Executable ("ocarina_cmd.adb") use "ocarina";
+      for Default_Switches ("Ada") use
+        Ocarina.Builder'Default_Switches ("Ada");
+   end Builder;
+
+end Ocarina.Main;
