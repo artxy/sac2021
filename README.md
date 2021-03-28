@@ -3,8 +3,6 @@
 # SAC 2021
 
 This repository contains the artifacts related to our paper submitted to the Software Engineering track @ SAC 2021. This repository is intended to (i) consult more largely the elements outlined in the paper and (ii) reproduce the experimentation results presented in the paper. 
-
-> **Warning**: some files in the Ocarina source code may disclose names of people / institutions participating in the Ocarina project.
  
 ## Usage
 
