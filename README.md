@@ -8,7 +8,7 @@ This repository contains the artifacts related to our paper submitted to the Sof
 
 You can see the models/source code simply by exploring the repository in your web navigator, alternatively you can download the project as a ZIP file or clone it (required for experimentation):
 
-`git clone https://github.com/artxy/sac2021.git`
+`git clone https://github.com/gbrau/sac2021.git`
 
 ## Content
 
@@ -51,7 +51,7 @@ The material provided here is intended to **Unix-like** systems and has been tes
 
 You can simply clone the repository, e.g. in your home directory (`cd ~`), with: 
 
-`git clone https://github.com/artxy/sac2021.git`
+`git clone https://github.com/gbrau/sac2021.git`
 
 Move to the root of the cloned repository to run the following steps:
 
